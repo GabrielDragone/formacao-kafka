@@ -66,5 +66,22 @@ Formação Alura: Mensageria com Apache Kafka
     * Criar consumidor para pegar mensagens desde o inicio: ```bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic NOME_DO_TOPICO --from-beginning```
       * O terminal irá exibir as mensagens enviadas do outro terminal.
 * 04 - Criando produtores em Java:
-  * 
+  * Criado projeto em Java 17 + Maven para seguir exemplos: [ecommerce](ecommerce)
+  * Adicionada dependencias no pom do projeto:
+    * kafka-clients.
+    * slf4j-simple.
+  * Desenvolvimento do exemplo sendo feito na classe Main.
+  * O Future do send não é um retorno, é uma promessa de retorno. O que o torna assíncrono.
+  * Podemos implementar o send com uma função que receba o callback para termos um retorno do que foi feito.
+  * Basta rodar a aplicação para publicar as mensagens.
+  * Rodar um consumidor para pegar as mensagens publicadas no ECOMMERCE_NEW_ORDER.
+* 05 - Criando consumidores em Java:
+  * Criaremos um serviço para detecter fraude chamado FraudDetectorService.
+  * Realizada a configuração do Consumer.
+  * Precisamos definir o GroupId para que o Kafka saiba que esse consumidor faz parte de um grupo de consumidores e que receba todas as mensagens daquele tópico.
+  * Se dois serviços tiverem o mesmo grupo, então as mensagens são distribuidas e não saberemos qual serviço vai receber qual mensagem.
+* 06 - Produtores x Consumidores:
+  * Em um sistema bancário, um usuário inicia o processo de uma transação bancária. Qual abordagem é baseada em produtores e consumidores de mensagens?
+    * A requisição é feita por um site ou app cujo servidor envia uma mensagem de pedido de transação bancária.
+    * Essa abordagem mistura o processo síncrono e a mensagem.
 
