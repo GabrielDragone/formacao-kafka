@@ -84,4 +84,11 @@ Formação Alura: Mensageria com Apache Kafka
   * Em um sistema bancário, um usuário inicia o processo de uma transação bancária. Qual abordagem é baseada em produtores e consumidores de mensagens?
     * A requisição é feita por um site ou app cujo servidor envia uma mensagem de pedido de transação bancária.
     * Essa abordagem mistura o processo síncrono e a mensagem.
+#### 01 - Produtores e consumidores:
+* 02 - Vários consumidores e produtores:
+  * Queremos despachar o pedido e também um e-mail, criando um novo produtor.
+  * Na classe Main, realizamos o envio de uma mensagem para o tópico ECOMMERCE_SEND_EMAIL.
+  * Criamos um novo consumidor para o tópico ECOMMERCE_SEND_EMAIL na EmailService.
+  * Criamos também o LogService, que irá ouvir todos os tópicos para logar as mensagens. Ele utilização de uma expressão regular para ouvir todos os tópicos que tenham ECOMMERCE.
+  * Quando enviarmos uma mensagem no Email e no Order Service, cada consumidor irá pegar 1 mensagem, mas o LogService pegará ambas. Com isso, criamos um grupo de mensagem para cada tópico e cada um receberá todas as mensagens que forem enviadas.
 

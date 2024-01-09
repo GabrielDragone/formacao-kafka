@@ -17,14 +17,19 @@ public class Main {
         var key = "GAB123";
         var value = "123,456,789";
         var record = new ProducerRecord<>(topicName, key, value);
-        producer.send(record, (data, exception) -> {
+        Callback callback = (data, exception) -> {
             if (exception != null) {
                 exception.printStackTrace();
                 return;
             }
-            System.out.println("Sent with success " + data.topic() + ":::partition " + data.partition() + "/ offset "
-                    + data.offset() + "/ timestamp " + data.timestamp());
-        }).get(); // Fazemos o código esperar o retorno do Future.
+            System.out.println("Sent with success " + data.topic() + ":::partition " + data.partition() + "/ offset " + data.offset() + "/ timestamp " + data.timestamp());
+        };
+        producer.send(record, callback).get(); // Fazemos o código esperar o retorno do Future.
+
+        // Email:
+        var emailTopicName = "ECOMMERCE_SEND_EMAIL";
+        var emailRecord = new ProducerRecord<>(emailTopicName, key, value);
+        producer.send(emailRecord, callback).get(); // Fazemos o código esperar o retorno do Future.
     }
 
     private static Properties properties() {
