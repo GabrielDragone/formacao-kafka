@@ -18,7 +18,7 @@ public class FraudDetectorService {
 
         while (true) { // Apenas para forçar o sistema a continuar buscando as mensagens.
             consumer.subscribe(Collections.singletonList(topic)); // Daria pra escutar de vários tópicos, mas ficaria muito bagunçado.
-            var records = consumer.poll(Duration.ofMillis(100));
+            var records = consumer.poll(Duration.ofMillis(100)); // Um dos momentos que ocorre o commit da mensagem.
 
             if (records.isEmpty()) {
                 System.out.println("No records found");
@@ -53,6 +53,8 @@ public class FraudDetectorService {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, FraudDetectorService.class.getSimpleName());
+        properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, FraudDetectorService.class.getSimpleName() + UUID.randomUUID().toString()
+        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1"); // Limita o número de registros que o consumidor recebe por vez.
 
         return properties;
     }

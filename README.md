@@ -91,4 +91,28 @@ Formação Alura: Mensageria com Apache Kafka
   * Criamos um novo consumidor para o tópico ECOMMERCE_SEND_EMAIL na EmailService.
   * Criamos também o LogService, que irá ouvir todos os tópicos para logar as mensagens. Ele utilização de uma expressão regular para ouvir todos os tópicos que tenham ECOMMERCE.
   * Quando enviarmos uma mensagem no Email e no Order Service, cada consumidor irá pegar 1 mensagem, mas o LogService pegará ambas. Com isso, criamos um grupo de mensagem para cada tópico e cada um receberá todas as mensagens que forem enviadas.
+* 03 - Paralelizando e a importância das keys:
+  * Quando tempos grupos de consumo diferentes entre os Consumidores, o Kafka irá entregar a mensagem do tópico para todos os consumidores do grupo.
+  * Porém, queremos que o serviço de Fraude, esteja rodando em dois "pods" (nesse caso, a classe foi rodada duas vezes).
+  * Dentro de um grupo, o Kafka irá entregar a mensagem para apenas um dos consumidores do grupo, pois não queremos que o código seja executado duas vezes. Porém, nesse caso, como temos apenas 1 partição, apenas o primeiro consumidor irá receber as mensagens, enquanto o segundo não receberá nada.
+  * Para reparticionar as mensagens, precisamos criar mais partições. Para isso, teremos que editar o server.properties e adicionar a configuração ```num.partitions=3```. 
+  * Descrever os tópicos: ```bin/kafka-topics.sh --bootstrap-server localhost:9092 --describe```.
+  * Só que esses que já existem, não serão alterados.
+  * Teremos que alterar o tópico para que ele tenha 3 partições: ```bin/kafka-topics.sh --alter --zookeeper localhost:2181 --topic ECOMMERCE_NEW_ORDER --partitions 3```.
+  * Ao rodarmos novamente a parte dos consumidores, veremos agora que um ficará responsável por 2 partições e o outro por 1, totalizando as 3, rebalanceada.
+  * Porém, ainda assim, o Kafka não entregará mensagem para a partição diferente da 0.
+  * Por no exemplo estarmos usando a mesma chave, o Kafka irá entregar a mensagem para a mesma partição, pois ele usa um algoritmo de hash para isso.
+  * Então, utilizamos um UUID para gerar uma chave aleatória para cada mensagem, dessa forma, o Kafka irá distribuir as mensagens entre as partições.
+  * Conseguimos visualizar os grupos de consumidores utilizando o comando: ```bin/kafka-consumer-groups.sh --all-groups --bootstrap-server localhost:9092 --describe```.
+  * Dentro de FraudDetectorService, definimos um nome personalizado do Consumidor setando o CLIENT_ID_CONFIG, concatenando o nome da classe + UUID.
+  * O Kafka pode decidir rebalancear as partições e isso pode causar um erro de processamento das mensagens que ainda estão sendo consumidas e isso pode ser um problema, que veremos como resolver na proxima aula.
+* 04 - Max poll e dando mais chances para auto commit:
+  * Esse problema está relacionado ao tempo de commit. O Kafka espera um tempo para fazer o commit das mensagens, e se o tempo for muito alto, ele pode rebalancear as partições e perdermos mensagens.
+  * Dentro do consumer.poll(Duration.ofMillis(100)) é um momento que ocorre esse commit. Porém existem outras que veremos futuramente.
+  * Dessa forma, precisaremos adicionar uma nova propriedade para acessar o poll mais frequentemente, para que o balanceamento não afete tanto o recebimento das mensagens.
+  * Dentro do FraudDetectorService, adicionamos a propriedade MAX_POLL_RECORDS_CONFIG com valor 1, para informar que queremos que o poll seja feito a cada mensagem recebida. Assim, temos chances menores de perdermos mensagens recebidas.
+  * A medida que o consumidor for consumindo as mensagens, é feita o commit e em caso de rebalanceamento, não perderemos as mensagens.
+* 06 - Qual a importância das chaves na parelelização de tarefas?
+  * Ela é peça fundamental para parelelizar o processamento de mensagens em um tópico dentro do mesmo consumer group.
+  * A chave é usada para distribuir a mensagem entre as partições existentes e consequentemente entre as instâncias de um serviço dentro de um consumer group.
 
