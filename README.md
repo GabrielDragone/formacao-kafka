@@ -115,4 +115,19 @@ Formação Alura: Mensageria com Apache Kafka
 * 06 - Qual a importância das chaves na parelelização de tarefas?
   * Ela é peça fundamental para parelelizar o processamento de mensagens em um tópico dentro do mesmo consumer group.
   * A chave é usada para distribuir a mensagem entre as partições existentes e consequentemente entre as instâncias de um serviço dentro de um consumer group.
-
+#### 02 - Paralelizando tarefas em um serviço:
+* 02 - Extraindo uma camada de consumidor:
+  * Criamos uma classe chamada KafkaService para abstrair o consumidor.
+  * Todo o código repetido das classes de EmailService e FraudDetectorService, foi extraido para a classe KafkaService.
+  * Parte de properties tbm.
+* 03 - Extraindo nossa camada de producer:
+  * Da mesma forma que extraimos o consumer acima, iremos extrair o service de producer.
+  * Criamos a classe KafkaDispatcher para abstrair a parte do Producer e deixar a classes NewOrderMain sem vinculos com o Kafka.
+  * Criamos um método send para enviar as mensagens.
+  * Também abstraimos a parte de properties.
+  * E por ultimo criamos o close para fecharmos o producer, em caso de erro ou sucesso, para não deixar o recurso aberto.
+  * Foi feita a mesma configuração no consumer.
+* 05 - Our own layer:
+  * Qual a vantagem de criar nossa própria camada?
+    * Adotar boas práticas como evitar código duplicado.
+    * Definir padrões, boas práticas e evitar más práticas, permitindo novos/as devs começar a desenvolver rapidamente código pronto para produção.

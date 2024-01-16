@@ -1,61 +1,36 @@
 package br.com.gabrieldragone;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Properties;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public class FraudDetectorService {
 
     public static void main(String[] args) {
         System.out.println("Initializing Fraud Detector...");
 
-        var consumer = new KafkaConsumer<>(properties());
-        var topic = "ECOMMERCE_NEW_ORDER";
-
-        while (true) { // Apenas para forçar o sistema a continuar buscando as mensagens.
-            consumer.subscribe(Collections.singletonList(topic)); // Daria pra escutar de vários tópicos, mas ficaria muito bagunçado.
-            var records = consumer.poll(Duration.ofMillis(100)); // Um dos momentos que ocorre o commit da mensagem.
-
-            if (records.isEmpty()) {
-                System.out.println("No records found");
-                continue;
-            }
-
-            for (var record : records) {
-                System.out.println("Processing new order, checking for fraud...");
-                System.out.println("Key: " + record.key());
-                System.out.println("Value: " + record.value());
-                System.out.println("Partition: " + record.partition());
-                System.out.println("Offset: " + record.offset());
-                System.out.println("Timestamp: " + record.timestamp());
-                System.out.println("--------------------------------------------------");
-
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Order processed");
-            }
+        var fraudDetectorService = new FraudDetectorService();
+        try (var kafkaService = new KafkaService( // Independente se ocorrer erro ou se der certo, fechará a conexão com recurso na sequencia.
+                FraudDetectorService.class.getSimpleName(),
+                "ECOMMERCE_NEW_ORDER",
+                fraudDetectorService::parse)) { // Referencia para o método parse.
+            kafkaService.run();
         }
     }
 
-    private static Properties properties() {
-        var properties = new Properties();
+    private void parse(ConsumerRecord<String, String> record) {
+        System.out.println("Processing new order, checking for fraud...");
+        System.out.println("Key: " + record.key());
+        System.out.println("Value: " + record.value());
+        System.out.println("Partition: " + record.partition());
+        System.out.println("Offset: " + record.offset());
+        System.out.println("Timestamp: " + record.timestamp());
+        System.out.println("--------------------------------------------------");
 
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        // Deserializa Bytes em Strings:
-        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class.getName());
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, FraudDetectorService.class.getSimpleName());
-        properties.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, FraudDetectorService.class.getSimpleName() + UUID.randomUUID().toString()
-        properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1"); // Limita o número de registros que o consumidor recebe por vez.
-
-        return properties;
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Order processed");
     }
+
 }
