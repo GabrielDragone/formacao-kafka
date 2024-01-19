@@ -84,7 +84,7 @@ Formação Alura: Mensageria com Apache Kafka
   * Em um sistema bancário, um usuário inicia o processo de uma transação bancária. Qual abordagem é baseada em produtores e consumidores de mensagens?
     * A requisição é feita por um site ou app cujo servidor envia uma mensagem de pedido de transação bancária.
     * Essa abordagem mistura o processo síncrono e a mensagem.
-#### 01 - Produtores e consumidores:
+#### 02 - Paralelizando tarefas em um serviço:
 * 02 - Vários consumidores e produtores:
   * Queremos despachar o pedido e também um e-mail, criando um novo produtor.
   * Na classe Main, realizamos o envio de uma mensagem para o tópico ECOMMERCE_SEND_EMAIL.
@@ -115,7 +115,7 @@ Formação Alura: Mensageria com Apache Kafka
 * 06 - Qual a importância das chaves na parelelização de tarefas?
   * Ela é peça fundamental para parelelizar o processamento de mensagens em um tópico dentro do mesmo consumer group.
   * A chave é usada para distribuir a mensagem entre as partições existentes e consequentemente entre as instâncias de um serviço dentro de um consumer group.
-#### 02 - Paralelizando tarefas em um serviço:
+#### 03 - Criando nossa camada:
 * 02 - Extraindo uma camada de consumidor:
   * Criamos uma classe chamada KafkaService para abstrair o consumidor.
   * Todo o código repetido das classes de EmailService e FraudDetectorService, foi extraido para a classe KafkaService.
@@ -131,3 +131,23 @@ Formação Alura: Mensageria com Apache Kafka
   * Qual a vantagem de criar nossa própria camada?
     * Adotar boas práticas como evitar código duplicado.
     * Definir padrões, boas práticas e evitar más práticas, permitindo novos/as devs começar a desenvolver rapidamente código pronto para produção.
+#### 03 - Serialização customizada:
+* 02 - Diretórios do Kafka e do Zookeper:
+  * O Kafka armazena os dados em disco, e por padrão, ele armazena em /tmp (mac e linux).
+  * Em qualquer sistema operacional, quando armazenamos algo no /tpm, ele pode acabar sendo apagado, pois é um diretório temporário.
+  * Podemos então criar duas pastas (pode ser na pasta anterior do Kafka), uma para o Kafka e outra para o Zookeper:
+    * mkdir data/kafka
+    * mkdir data/zookeeper
+  * Ai preciraremos editar os arquivos de configuração do kafka e do zookeeper para apontar para essas pastas:
+    * config/server.properties:
+      * ```vi config/server.properties```
+      * log.dirs=/Users/rodrigo/Developer/kafka/data/kafka
+    * config/zookeeper.properties
+      * ```vi config/zookeeper.properties```
+      * dataDir=/Users/rodrigo/Developer/kafka/data/zookeeper
+    * Se quisermos deletar os logs do temp, rodamos o comando: ```rm -rf /tmp/kafka-logs/ /tmp/zookeeper/```
+    * Rodamos o zookeeper e o kafka novamente através dos comandos:
+      * ```bin/zookeeper-server-start.sh config/zookeeper.properties```
+      * ```bin/kafka-server-start.sh config/server.properties```
+    * Consegui rodar o zookeeper e kafka agora, dps de alterar a pasta acima.
+    * 
