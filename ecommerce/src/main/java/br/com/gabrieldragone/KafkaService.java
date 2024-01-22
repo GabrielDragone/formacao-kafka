@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class KafkaService implements Closeable {
 
@@ -19,9 +20,18 @@ public class KafkaService implements Closeable {
     private final ConsumerFunction parse;
 
     public KafkaService(String groupId, String topic, ConsumerFunction parse) {
+        this(parse, groupId);
+        consumer.subscribe(Collections.singletonList(topic)); // Daria pra escutar de vários tópicos, mas ficaria muito bagunçado.
+    }
+
+    public KafkaService(String groupId, Pattern topic, ConsumerFunction parse) {
+        this(parse, groupId);
+        consumer.subscribe(Collections.singletonList(topic));
+    }
+
+    private KafkaService(ConsumerFunction parse, String groupId) { // Inicializa os dois campos para serem usados nos construtores acima.
         this.parse = parse;
         this.consumer = new KafkaConsumer<>(properties(groupId));
-        consumer.subscribe(Collections.singletonList(topic)); // Daria pra escutar de vários tópicos, mas ficaria muito bagunçado.
     }
 
     public void run(){

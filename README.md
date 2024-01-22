@@ -154,3 +154,5 @@ Formação Alura: Mensageria com Apache Kafka
   * A ideia dessa aula foi implementar o GSON para serializar os objetos que estamos enviando. Tivemos que criar a classe GsonSerializer para receber o tipo generico <T> e serializar o objeto. Dessa forma, conseguimos enviar a String ou a classe Order criada ou qualquer outra classe futuramente criada para realizar esse envio.
   * Na NewOrderMain, foi necessário criar dois dispatcher, um para enviar a String e outro para enviar o objeto Order.
   * Na KafkaDispatcher, foi necessário alterar o atributo de serialização para o genérico.
+* 04 - Migrando o log:
+  * Migrado o consumidor do LogService e melhorando construtores do KafkaService para receber o pattern de regex.
