@@ -150,4 +150,7 @@ Formação Alura: Mensageria com Apache Kafka
       * ```bin/zookeeper-server-start.sh config/zookeeper.properties```
       * ```bin/kafka-server-start.sh config/server.properties```
     * Consegui rodar o zookeeper e kafka agora, dps de alterar a pasta acima.
-    * 
+* 03 - Serialização com GSON:
+  * A ideia dessa aula foi implementar o GSON para serializar os objetos que estamos enviando. Tivemos que criar a classe GsonSerializer para receber o tipo generico <T> e serializar o objeto. Dessa forma, conseguimos enviar a String ou a classe Order criada ou qualquer outra classe futuramente criada para realizar esse envio.
+  * Na NewOrderMain, foi necessário criar dois dispatcher, um para enviar a String e outro para enviar o objeto Order.
+  * Na KafkaDispatcher, foi necessário alterar o atributo de serialização para o genérico.
