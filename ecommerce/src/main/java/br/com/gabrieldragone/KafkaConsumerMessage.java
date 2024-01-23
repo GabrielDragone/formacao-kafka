@@ -28,7 +28,7 @@ public class KafkaConsumerMessage<T> implements Closeable {
     public KafkaConsumerMessage(String groupId, Pattern topic, ConsumerFunction parse, Class<T> classType,
                                 Map<String, String> extraProperties) {
         this(parse, groupId, classType, extraProperties);
-        consumer.subscribe(Collections.singletonList(topic));
+        consumer.subscribe(topic);
     }
 
     private KafkaConsumerMessage(ConsumerFunction parse, String groupId, Class<T> classType,
