@@ -156,3 +156,12 @@ Formação Alura: Mensageria com Apache Kafka
   * Na KafkaDispatcher, foi necessário alterar o atributo de serialização para o genérico.
 * 04 - Migrando o log:
   * Migrado o consumidor do LogService e melhorando construtores do KafkaService para receber o pattern de regex.
+* 05 - Deserialização customizada:
+  * Basicamente foi criada a classe de GsonDeserializer para transformar as mensagens em algum tipo de Classe, junto com a lógica de deserialização implementada em cada um dos consumidores através do construtor do KafkaConsumerMessage, onde cada serviço deverá informar qual o tipo de classe que ele irá receber para ser deserializada.
+  * Para representar essas classes genéricas, foi utilizado o tipo T que usa-se em tempo de compilação.
+  * Porém, a aplicação continuará dando erro na parte de LogService por ainda não estar preparada para receber um Objeto no lugar da String.
+* 06 - Lidando com customizações:
+  * Quando queremos utilizar vários subjects num consumidor, que é o caso do LogService, devido à atualmente estar recebendo String e Order, pode ocorrer um problema.
+  * Isso não é um cenário que geralmente ocorre, pois um consumidor geralmente é responsável por um tipo de mensagem apenas.
+  * Para resolver, foi necessário passar um novo parâmetro de propriedades extras no LogService, onde informamos que ao invés do GsonDeserializer, queremos utilizar o StringDeserializer.
+  * Essa configuração é setada através do overrideProperties no setProperties do KafkaConsumerMessage.

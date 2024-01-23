@@ -10,11 +10,11 @@ import java.io.Closeable;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
-public class KafkaDispatcher<T> implements Closeable { // <T> Tipo genérico
+public class KafkaProducerMessage<T> implements Closeable { // <T> Tipo genérico
 
     private final KafkaProducer<String, T> producer;
 
-    public KafkaDispatcher() {
+    public KafkaProducerMessage() {
         this.producer = new KafkaProducer<>(properties());
     }
 

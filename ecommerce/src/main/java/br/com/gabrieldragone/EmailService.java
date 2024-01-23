@@ -2,16 +2,20 @@ package br.com.gabrieldragone;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import java.util.Map;
+
 public class EmailService {
 
     public static void main(String[] args) {
         System.out.println("Initializing Email Service...");
 
         var emailService = new EmailService();
-        try (var service = new KafkaService( // Independente se ocorrer erro ou se der certo, fechará a conexão com recurso na sequencia.
+        try (var service = new KafkaConsumerMessage( // Independente se ocorrer erro ou se der certo, fechará a conexão com recurso na sequencia.
                 EmailService.class.getSimpleName(),
                 "ECOMMERCE_SEND_EMAIL",
-                emailService::parse)) { // Referencia para o método parse.
+                emailService::parse, // Referencia para o método parse.
+                String.class,
+                Map.of())) { // Properiedades extras se quisermos setar
             service.run();
         }
     }

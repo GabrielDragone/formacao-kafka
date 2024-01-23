@@ -10,8 +10,8 @@ public class NewOrderMain {
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
         System.out.println("Initializing Kafka Producer...");
 
-        try (var orderDispatcher = new KafkaDispatcher<Order>()) { // Qualquer erro que ocorrer ou se executar com sucesso, o KafkaDispatcher vai fechar a conexão. Método close().
-            try (var emailDispatcher = new KafkaDispatcher<String>()) {
+        try (var orderDispatcher = new KafkaProducerMessage<Order>()) { // Qualquer erro que ocorrer ou se executar com sucesso, o KafkaDispatcher vai fechar a conexão. Método close().
+            try (var emailDispatcher = new KafkaProducerMessage<String>()) {
                 for (var i = 0; i < 10; i++) {
                     var userId = UUID.randomUUID().toString();
                     var orderId = UUID.randomUUID().toString();
