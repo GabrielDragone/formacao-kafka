@@ -131,7 +131,7 @@ Formação Alura: Mensageria com Apache Kafka
   * Qual a vantagem de criar nossa própria camada?
     * Adotar boas práticas como evitar código duplicado.
     * Definir padrões, boas práticas e evitar más práticas, permitindo novos/as devs começar a desenvolver rapidamente código pronto para produção.
-#### 03 - Serialização customizada:
+#### 04 - Serialização customizada:
 * 02 - Diretórios do Kafka e do Zookeper:
   * O Kafka armazena os dados em disco, e por padrão, ele armazena em /tmp (mac e linux).
   * Em qualquer sistema operacional, quando armazenamos algo no /tpm, ele pode acabar sendo apagado, pois é um diretório temporário.
@@ -165,3 +165,24 @@ Formação Alura: Mensageria com Apache Kafka
   * Isso não é um cenário que geralmente ocorre, pois um consumidor geralmente é responsável por um tipo de mensagem apenas.
   * Para resolver, foi necessário passar um novo parâmetro de propriedades extras no LogService, onde informamos que ao invés do GsonDeserializer, queremos utilizar o StringDeserializer.
   * Essa configuração é setada através do overrideProperties no setProperties do KafkaConsumerMessage.
+#### 05 - Microsserviços e módulos:
+* 02 - Microsserviços como módulos em um mono repo:
+  * Cada um dos serviços que desenvolvemos, poderia ser um projeto separado, porém, para facilitar o desenvolvimento, podemos colocar todos os serviços dentro de um mesmo projeto, e cada um deles ser um módulo.
+  * Temos algumas formas de separar esses escopos, como criando novos projetos, ou separando esse projeto em módulos, utilizando o maven ou gradle.
+  * Realizamos a criação de um novo módulo para cada recurso, ficando: common-kafka, service-order, service-email, service-fraud-detector, service-log e movemos suas respectivas classes para dentro dos mesmos.
+  * As classes que ficaram em comum foram movidas para o common-kafka.
+  * Depois dentro de cada modulo, realizamos a importação dos módulos necessários para utilizar a aplicação.
+  * Outra dica é mover utilizando o refactor do IntelliJ, para que ele já atualize as importações corretamente.
+* 03 - Binários dos microsserviços:
+  * Não tem problema compartilharmos a classe Order entre os serviços. Porém, o problema seria se algum dos serviços precisasse de uma propriedade nova do Order, estariamos forçando que os demais módulos também utilizassem essa, teriamos que atualizar todos os módulos.
+  * Isso cria uma certa dependência entre os módulos, pois toda vez que quisessemos lançar uma versão nova, teriamos que esperar a correção do Order ser feita.
+  * Como a Order é uma classe de modelo simples, não teria problema duplicarmos elas entre os módulos.
+  * Realizados testes, subindo o Zookeeper e o Kafka, o mesmo funcionou corretamente produzindo e consumindo através dos tópicos.
+  * Agora iremos empacotar o projeto.
+  * Iremos no Maven (canto direito) > ecommerce (root) > maven package.
+  * Será gerado o jar de cada um desses módulos.
+* 05 - Bibliotecas comuns:
+  * Qual a vantagem de extrair bibliotecas comuns?
+    * Evitar duplicação de código.
+    * Múltiplos projetos se beneficiam da mesma base de código.
+    * Isso permite que devs foquem nos requirimentos únicos de seu projeto.
