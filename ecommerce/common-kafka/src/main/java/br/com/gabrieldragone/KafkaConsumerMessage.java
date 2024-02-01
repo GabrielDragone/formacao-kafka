@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class KafkaConsumerMessage<T> implements Closeable {
@@ -37,13 +38,19 @@ public class KafkaConsumerMessage<T> implements Closeable {
         this.consumer = new KafkaConsumer<>(setProperties(classType, groupId, extraProperties));
     }
 
-    public void run(){
+    public void run() {
         while (true) { // Apenas para forçar o sistema a continuar buscando as mensagens.
-            ConsumerRecords records = consumer.poll(Duration.ofMillis(100));
+            var records = consumer.poll(Duration.ofMillis(100));
             if (!records.isEmpty()) {
                 System.out.println("Founded " + records.count() + " records"); // Como ta com o max poll 1, vai encontrar apenas 1.
                 for (var record : records) {
-                    parse.consume((ConsumerRecord<String, T>) record);
+                    try {
+                        parse.consume((ConsumerRecord<String, T>) record);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

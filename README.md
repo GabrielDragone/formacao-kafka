@@ -186,3 +186,29 @@ Formação Alura: Mensageria com Apache Kafka
     * Evitar duplicação de código.
     * Múltiplos projetos se beneficiam da mesma base de código.
     * Isso permite que devs foquem nos requirimentos únicos de seu projeto.
+
+### Kafka: Fast delegate, evolução e cluster de brokers:
+* Link: https://cursos.alura.com.br/course/kafka-cluster-de-microservicos
+
+#### 01 - Novos produtores e novos consumidores:
+* 02 - Produtores consumidores e o eager de patterns:
+  * No [FraudDetectorService.java](ecommerce%2Fservice-fraud-detector%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FFraudDetectorService.java) iremos simular a situação onde alguns pedidos irão ocorrer com sucesso e outros não.
+  * A validação que iremos inserir é se o value da order for maior que 4500, iremos simular que o pedido foi fraudulento.
+  * Uma observação, se estivessemos utilizando a classe de modelo java normal (sem ser o record) é que agora teriamos duas classes Order, ambas com os mesmos atributos, porém uma dela semos métodos de getters e setters.
+  * Além de consumir as mensagens, agora no FraudDetector iremos enviar mensagens de sucesso e de erro.
+  * Dai temos duas opções, ou paramos o serviço, jogando a exception pra cima nos métodos, ou utilizamos o try/catch e tratamos a mensagem de erro.
+  * Quando adicionamos novos tópicos, para o [LogService.java](ecommerce%2Fservice-log%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FLogService.java) receber as mensagens, devido ao patterns, se surgir um novo tópico, ele não irá ouvir automaticamente, sendo necessária a reinicialização do mesmo para que ele possa ouvir o novo tópico.
+  * 
+
+
+Atalhos:
+* Iniciar o Zookeeper:
+``` sh Zookeper
+cd ../kafka_2.13-3.6.1
+bin/zookeeper-server-start.sh config/zookeeper.properties
+```
+* Init o Kafka:
+``` sh Kafka
+cd ../kafka_2.13-3.6.1
+bin/kafka-server-start.sh config/server.properties
+```
