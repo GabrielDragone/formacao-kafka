@@ -198,7 +198,13 @@ Formação Alura: Mensageria com Apache Kafka
   * Além de consumir as mensagens, agora no FraudDetector iremos enviar mensagens de sucesso e de erro.
   * Dai temos duas opções, ou paramos o serviço, jogando a exception pra cima nos métodos, ou utilizamos o try/catch e tratamos a mensagem de erro.
   * Quando adicionamos novos tópicos, para o [LogService.java](ecommerce%2Fservice-log%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FLogService.java) receber as mensagens, devido ao patterns, se surgir um novo tópico, ele não irá ouvir automaticamente, sendo necessária a reinicialização do mesmo para que ele possa ouvir o novo tópico.
-  * 
+* 03 - Um serviço que acessa bancos externos:
+  * Criada classe responsável pela criação de usuarios [CreateUserService.java](ecommerce%2Fservice-users%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FCreateUserService.java).
+  * Utilizando SQLite, pois o intuito do curso não é focar em banco de dados, mas sim em Kafka.
+  * Preparada a conexão e criação de arquivo para representar o banco de dados que será salvo dentro de ecommerce/target/users_database.db.
+  * Feita a lógica de criação de usuário e validação de usuário existente.
+  * Também foi realizada a alteração das exceptions lançadas no Consumer, deixando as mesmas mais genéricas. Porém, isso não é o ideal.
+  * Paramos no problema entre schemas que vão sendo levados durante a evolução dos serviços.
 
 
 Atalhos:

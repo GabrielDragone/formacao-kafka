@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 
 public class FraudDetectorService {
 
+    private final KafkaProducerMessage<Order> orderKafkaProducer = new KafkaProducerMessage<>();
+
     public static void main(String[] args) {
         System.out.println("Initializing Fraud Detector...");
 
@@ -21,8 +23,6 @@ public class FraudDetectorService {
             kafkaService.run();
         }
     }
-
-    private final KafkaProducerMessage<Order> orderKafkaProducer = new KafkaProducerMessage<>();
 
     private void parse(ConsumerRecord<String, Order> record) throws ExecutionException, InterruptedException { //
         System.out.println("Processing new order, checking for fraud...");

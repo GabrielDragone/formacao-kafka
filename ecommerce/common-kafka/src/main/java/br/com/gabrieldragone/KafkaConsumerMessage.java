@@ -46,9 +46,7 @@ public class KafkaConsumerMessage<T> implements Closeable {
                 for (var record : records) {
                     try {
                         parse.consume((ConsumerRecord<String, T>) record);
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
