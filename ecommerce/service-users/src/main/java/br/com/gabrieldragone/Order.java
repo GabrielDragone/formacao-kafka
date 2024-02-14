@@ -2,8 +2,4 @@ package br.com.gabrieldragone;
 
 import java.math.BigDecimal;
 
-public record Order(String userId, String orderId, BigDecimal amount) {
-    public String getEmail() {
-        return "gabriel@email.com";
-    }
-}
+public record Order(String userId, String orderId, BigDecimal amount, String email) { }

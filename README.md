@@ -205,7 +205,13 @@ Formação Alura: Mensageria com Apache Kafka
   * Feita a lógica de criação de usuário e validação de usuário existente.
   * Também foi realizada a alteração das exceptions lançadas no Consumer, deixando as mesmas mais genéricas. Porém, isso não é o ideal.
   * Paramos no problema entre schemas que vão sendo levados durante a evolução dos serviços.
-
+#### 02 - Evoluindo um serviço:
+* 02 - Evoluindo serviços e schemas:
+  * Precisamos pensar se os processos que foram iniciados em paralelo foram ou não executados e se a ordem dessa execução não quebre nenhum processo do sistema.
+  * Os sistemas devem estar preparados para caso um dado ainda não esteja pronto devido à algum sistema que não tenha sido executado ainda.
+  * Dentro do domain Order do service-order, adicionamos o email e enviamos a mensagem para os tópicos.
+  * Os serviços que tem a Order sem o email implementado, vão basicamente ignorar o campo novo e trabalhar apenas com os campos informado em sua versão da Order.
+  * E os que precisam, como é o caso do service-users, irão implementar o campo e fazer o que quiser com o dado novo.
 
 Atalhos:
 * Iniciar o Zookeeper:

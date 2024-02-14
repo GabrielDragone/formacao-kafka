@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class CreateUserService {
 
@@ -16,9 +15,14 @@ public class CreateUserService {
         System.out.println("Initializing CreateUserService...");
         String url = "jdbc:sqlite:ecommerce/target/users_database.db"; // Pasta onde o arquivo será criado.
         connection = DriverManager.getConnection(url); // Cria e pega a conexão com o banco de dados.
-        connection.createStatement().execute("create table if not exists Users (" +
-                "uuid varchar(200) primary key, " +
-                "email varchar(200))");
+        try {
+            connection.createStatement().execute("create table if not exists Users (" +
+                    "uuid varchar(200) primary key, " +
+                    "email varchar(200))");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args) throws SQLException {
@@ -42,17 +46,19 @@ public class CreateUserService {
 
         var order = record.value();
 
-        if (isNewUser(order.getEmail())) {
-            insertNewUser(order.getEmail());
+        var email = order.email();
+
+        if (isNewUser(email)) {
+            insertNewUser(order.userId(), email);
         }
 
         System.out.println("Order processed");
     }
 
-    private void insertNewUser(String email) throws SQLException {
+    private void insertNewUser(String uuid, String email) throws SQLException {
         var insert = connection.prepareStatement("insert into Users (uuid, email) values (?, ?)");
-        insert.setString(1, "uuid");
-        insert.setString(2, "email");
+        insert.setString(1, uuid);
+        insert.setString(2, email);
         insert.execute();
         System.out.println("User with email " + email + " inserted");
     }
