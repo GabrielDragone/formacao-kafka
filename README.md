@@ -212,6 +212,12 @@ Formação Alura: Mensageria com Apache Kafka
   * Dentro do domain Order do service-order, adicionamos o email e enviamos a mensagem para os tópicos.
   * Os serviços que tem a Order sem o email implementado, vão basicamente ignorar o campo novo e trabalhar apenas com os campos informado em sua versão da Order.
   * E os que precisam, como é o caso do service-users, irão implementar o campo e fazer o que quiser com o dado novo.
+* 03 - Escolhendo o id adequado:
+  * A maneira que estavamos tratando a id do usuário não era a melhor, pois a todo momento estávamos gerando um novo id para o usuário. O que deveria ser gerado são pedidos diferentes e um usuário poderia ter 1 ou mais pedidos.
+  * Dai ao invés de usarmos o id do usuário, utilizamos o email do usuário para identificar o mesmo. Para isso, tivemos que arrancar o id do usuário do Order.
+  * No service-users, precisamos retirar o id tbm e adicionar no momento da criação do usuário apenas se o mesmo ainda não existir. Assim estamos atribuindo corretamente a id do usuário para o serviço que é realmente responsável por isso.
+  * O serviço do fraud detector também não irá precisar mais da id e o agrupamento será feito por email.
+  * Agora se rodarmos a aplicação, na parte do user service, o mesmo será criado apenas uma vez, enquanto nos demais o processamento continuará normal.
 
 Atalhos:
 * Iniciar o Zookeeper:

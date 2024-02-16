@@ -1,7 +1,6 @@
 package br.com.gabrieldragone;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -42,10 +41,10 @@ public class FraudDetectorService {
         var order = record.value();
         if (isFraud(order)) {
             System.out.println("Fraud detected! Order: " + order);
-            orderKafkaProducer.send("ECOMMERCE_ORDER_REJECTED", order.userId(), order);
+            orderKafkaProducer.send("ECOMMERCE_ORDER_REJECTED", order.email(), order);
         } else {
             System.out.println("Approved: " + order);
-            orderKafkaProducer.send("ECOMMERCE_ORDER_APPROVED", order.userId(), order);
+            orderKafkaProducer.send("ECOMMERCE_ORDER_APPROVED", order.email(), order);
         }
 
         System.out.println("Order processed");
