@@ -231,7 +231,14 @@ Formação Alura: Mensageria com Apache Kafka
   * Quando o processo é finalizado, podemos de diversas formas avisar o usuário que o processo foi finalizado.
   * A ideia do ponto de entrada é ter o mínimo de código possível, mínimo de processamento, para deixar que a mensagem faça tudo por nós.
   * Poderiamos nesse exemplo, fazer com que a criação do pedido e envio de e-mail fossem feitos em serviços separados.
-
+#### 04 - Cluster de brokers:
+* 02 - Single point of failure do broker:
+  * Por mais que levantemos diversas instancias dos services, fazendo com que eles deixem de ser um ponto de falha, o Kafka ainda é um ponto de falha, pois ele é único.
+  * Se ele cair, todos esses serviços com diversas instâncias não irão conseguir estabelecer uma conexão junto ao Kafka.
+  * Se tentarmos enviar uma mensagem, devido ao producer.send.get() ter o comportamento de esperar, ele vai aguardar até que o Kafka volte, e isso pode ser um problema, pq irá travar o sistema até que o Kafka volte.
+  * A partir do momento que o Kafka voltar, os serviços que estão esperando para enviar as mensagens, irão enviar todas de uma vez.
+  * Ainda em relação aos serviços, como eles trabalham com tópicos que tem 3 partições, se um serviço cair, o outro assume as partições do serviço que caiu. Quando os serviços sobem, é rebalanceado as partições.
+  * 
 
 Atalhos:
 * Iniciar o Zookeeper:
