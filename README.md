@@ -2,7 +2,7 @@
 Formação Alura: Mensageria com Apache Kafka
 * Link: https://cursos.alura.com.br/formacao-kafka
 
-## 1. Streams, Cluster e Microsserviços:
+## 1. Streams, Clust er e Microsserviços:
 ### O que é Kafka? #HipsterPontoTube - Youtube:
 * [![](https://markdown-videos.vercel.app/youtube/G6Tcy7hNdA8)](https://youtu.be/G6Tcy7hNdA8)
 * Sistema normalmente chamado de Pub/Sub (Publisher/Subscriber), onde um temos pessoas produzindo eventos e outras consumindo os mesmos.
@@ -218,6 +218,13 @@ Formação Alura: Mensageria com Apache Kafka
   * No service-users, precisamos retirar o id tbm e adicionar no momento da criação do usuário apenas se o mesmo ainda não existir. Assim estamos atribuindo corretamente a id do usuário para o serviço que é realmente responsável por isso.
   * O serviço do fraud detector também não irá precisar mais da id e o agrupamento será feito por email.
   * Agora se rodarmos a aplicação, na parte do user service, o mesmo será criado apenas uma vez, enquanto nos demais o processamento continuará normal.
+#### 03 - Servidor HTTP:
+* 02 - Usando um servidor http como ponto de entrada:
+  * A ideia é fazer com que o gatilho para a geração das mensagens seja feita de forma manual através de algum acionamento http.
+  * Então foi criado um novo módulo [service-http-ecommerce](ecommerce%2Fservice-http-ecommerce) que utilizará a biblioteca http jetty servlet que dentro tem a jetty core.
+  * Com isso, implementamos o [HttpEcommerceService.java](ecommerce%2Fservice-http-ecommerce%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FHttpEcommerceService.java) que é responsável por subir um servidor na porta 8080 e o [NewOrderServlet.java](ecommerce%2Fservice-http-ecommerce%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FNewOrderServlet.java) que é como se fosse um controller que irá receber as requisições e enviar as mensagens para o Kafka.
+  * Além disso, fizemos de forma dinâmica, para receber o email e valor via parametros do request.
+
 
 Atalhos:
 * Iniciar o Zookeeper:
