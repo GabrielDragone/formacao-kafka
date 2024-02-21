@@ -224,6 +224,13 @@ Formação Alura: Mensageria com Apache Kafka
   * Então foi criado um novo módulo [service-http-ecommerce](ecommerce%2Fservice-http-ecommerce) que utilizará a biblioteca http jetty servlet que dentro tem a jetty core.
   * Com isso, implementamos o [HttpEcommerceService.java](ecommerce%2Fservice-http-ecommerce%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FHttpEcommerceService.java) que é responsável por subir um servidor na porta 8080 e o [NewOrderServlet.java](ecommerce%2Fservice-http-ecommerce%2Fsrc%2Fmain%2Fjava%2Fbr%2Fcom%2Fgabrieldragone%2FNewOrderServlet.java) que é como se fosse um controller que irá receber as requisições e enviar as mensagens para o Kafka.
   * Além disso, fizemos de forma dinâmica, para receber o email e valor via parametros do request.
+* 03 - Fast delegate:
+  * Quanto mais código incluirmos dentro do método do servlet, maior a change de ocorrer uma falha e perdermos a compra ou a requisição da pessoa usuária final.
+  * O método de fast delegate é utilizado para que possamos fazer a chamada do método de forma assíncrona, para que o servidor não fique travado esperando a resposta do Kafka.
+  * É basicamente delegar de maneira rápida a execução do método para que o servidor possa continuar atendendo outras requisições.
+  * Quando o processo é finalizado, podemos de diversas formas avisar o usuário que o processo foi finalizado.
+  * A ideia do ponto de entrada é ter o mínimo de código possível, mínimo de processamento, para deixar que a mensagem faça tudo por nós.
+  * Poderiamos nesse exemplo, fazer com que a criação do pedido e envio de e-mail fossem feitos em serviços separados.
 
 
 Atalhos:
