@@ -238,6 +238,30 @@ Formação Alura: Mensageria com Apache Kafka
   * Se tentarmos enviar uma mensagem, devido ao producer.send.get() ter o comportamento de esperar, ele vai aguardar até que o Kafka volte, e isso pode ser um problema, pq irá travar o sistema até que o Kafka volte.
   * A partir do momento que o Kafka voltar, os serviços que estão esperando para enviar as mensagens, irão enviar todas de uma vez.
   * Ainda em relação aos serviços, como eles trabalham com tópicos que tem 3 partições, se um serviço cair, o outro assume as partições do serviço que caiu. Quando os serviços sobem, é rebalanceado as partições.
+* 03 - Replicação em cluster:
+  * Iremos configurar um segundo servidor de Kafka para que ele possa ser um backup do primeiro, simulando dessa forma um escalonamento.
+  * Para isso, precisamos criar um novo arquivo de configuração para o segundo servidor, copiando o server.properties e renomeando para server2.properties:
+  * ```cp config/server.properties config/server2.properties```
+  * Editamos o arquivo para que ele aponte para uma porta diferente, no caso, a 9093:
+  * ```code config/server2.properties```
+  * Alteramos o broker.id para 2, pois o primeiro já é 0 e decidimos que pra um melhor entendimento e identificação iremos pular o 1.
+  * Alteraremos tbm o log.dirs para que ele aponte para uma pasta diferente, para que não haja conflito com o primeiro servidor:
+    * log.dirs=/Users/{meuUser}/Documents/Projects/Pessoal/data/kafka2
+  * E por fim, alteramos o listeners para que ele escute na porta 9093:
+    * listeners=PLAINTEXT://:9093
+  * Como é um exemplo local, não tem problema definirmos portas diferentes, porém, em produção, as portas serão as mesmas, porém, os ips serão diferentes e o direcionamento será feito provavelmente por um load balancer.
+  * Para levantar o server 2, basta seguir os atalhos do final da pagina.
+  * Utilizando todos os serviços ups e gerando as mensagens, podemos derrubar o server 1 pra ver como vai ser o comportamento do server 2. Mas, por enquanto, esse comportamento não será o esperado, pois os serviços não conseguirão se conectar com o broker do node 0 e o funcionamento desses serviços só irão voltar após subirmos novamente o server 1.
+  * Esse comportamento ocorre pois todas as partições estão no leader do server 1.
+  * Precisaremos alterar a configuração do tópico para que ele tenha 3 partições e 2 replicas:
+    * ```bin/kafka-topics.sh --alter --zookeeper localhost:2181 --topic ECOMMERCE_NEW_ORDER --partitions 3 --replication-factor 2```
+    * Porém, esse comando vai dar problema, pois o tópico já existe e não podemos alterar o número de partições de um tópico que já existe.
+  * Dessa forma, teremos que alterar a configuração dos dois kafkas, adicionando o replication-factor=2 dentro do arquivo de configuração.
+  * Então precisaremos reiniciar a configuração do Kafka do zero, removendo os arquivos de log do data:
+    * ```rm -rf data/kafka/*```
+    * ```rm -rf data/zookeeper/*```
+  * Agora basta iniciar o zookeeper, kafka1 e kafka2.
+  * Se olharmos os tópicos, veremos que agora temos 3 partições e 2 replicas e essas partições estão nos dois kafkas.
   * 
 
 Atalhos:
@@ -246,8 +270,15 @@ Atalhos:
 cd ../kafka_2.13-3.6.1
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
-* Init o Kafka:
+
+* Iniciar o Kafka:
 ``` sh Kafka
 cd ../kafka_2.13-3.6.1
 bin/kafka-server-start.sh config/server.properties
+```
+
+* Iniciar o Kafka 2:
+``` sh Kafka 2
+cd ../kafka_2.13-3.6.1
+bin/kafka-server-start.sh config/server2.properties
 ```
