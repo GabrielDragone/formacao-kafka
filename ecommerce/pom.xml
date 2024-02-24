@@ -16,6 +16,7 @@
         <module>service-order</module>
         <module>service-users</module>
         <module>service-http-ecommerce</module>
+        <module>service-http-ecommerce-spring</module>
     </modules>
 
     <dependencies>
