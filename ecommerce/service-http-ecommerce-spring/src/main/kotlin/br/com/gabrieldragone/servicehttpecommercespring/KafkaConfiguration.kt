@@ -7,16 +7,16 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ComponentScan("br.com.gabrieldragone")
-class TestConfiguration {
+class KafkaConfiguration {
 
-        @Bean
-        fun orderDispatcher(): KafkaProducerMessage<Order> {
-            return KafkaProducerMessage()
-        }
+    @Bean
+    fun orderDispatcher(): KafkaProducerMessage<Order> {
+        return KafkaProducerMessage()
+    }
 
-        @Bean
-        fun emailDispatcher(): KafkaProducerMessage<String> {
-            return KafkaProducerMessage()
-        }
+    @Bean
+    fun emailDispatcher(): KafkaProducerMessage<String> {
+        return KafkaProducerMessage()
+    }
 
 }
