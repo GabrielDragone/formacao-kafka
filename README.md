@@ -264,6 +264,11 @@ Formação Alura: Mensageria com Apache Kafka
   * Se olharmos os tópicos, veremos que agora temos 3 partições e 2 replicas e essas partições estão nos dois kafkas.
   * Agora, se derrubarmos o kafka1, o kafka2 irá assumir as partições e os serviços irão continuar funcionando.
   * E quando subirmos novamente o kafka1, os serviços irão rebalancear as partições, porém existe um ponto de falha referente ao consumer offsets, devido ao offset ser salvo no kafka, e se o kafka cair, o offset é perdido, por causa do ReplicationFactor 1.
+* 03.01 - Ajustes nos projetos:
+  * Como o service-http-ecommerce não estava funcionando com a biblioteca de Servlet, resolvi criar um novo projeto usando Kotlin e Spring Boot para fazer a mesma coisa e substituir o mesmo.
+  * Além disso, no common-kafka, precisei adicionar a dependencia do Spring para que eu conseguisse importar o projeto no Spring sem dar erro de bean type.
+  * Também consegui configurar, pelo menos via Windows, a parte dos serviços via docker-compose.
+  * Configurado para subir dois kafkas, e dessa forma, conseguir usar o replication factor = 2.
 
 Atalhos:
 * Iniciar o Zookeeper:
