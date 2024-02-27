@@ -21,10 +21,11 @@ class NewOrderController(
     fun createOrder(
         @RequestParam("email") email: String,
         @RequestParam("amount") value: BigDecimal
-    ) {
+    ): ResponseEntity<String> {
         val orderId = UUID.randomUUID().toString()
         val order = Order(orderId, value, email)
         orderService.createOrder(order)
+        return ResponseEntity.ok("New order created!")
     }
 
 }

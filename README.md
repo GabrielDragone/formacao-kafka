@@ -269,6 +269,31 @@ Formação Alura: Mensageria com Apache Kafka
   * Além disso, no common-kafka, precisei adicionar a dependencia do Spring para que eu conseguisse importar o projeto no Spring sem dar erro de bean type.
   * Também consegui configurar, pelo menos via Windows, a parte dos serviços via docker-compose.
   * Configurado para subir dois kafkas, e dessa forma, conseguir usar o replication factor = 2.
+* 04 - Cluster de 5 brokers e explorando líderes e réplicas:
+  * Iremos alterar os arquivos de configuração para aumentar:
+    * ```code config/server.properties```
+    * offsets.topic.replication.factor=3.
+    * transaction.state.log.replication.factor=3.
+    * default.replication.factor=3.
+  * Deletamos o server2, mas iremos criar mais 4:
+  * ```rm config/server2.properties```
+  * Movemos o arquivo server.properties para server1.properties:
+    * ```mv config/server.properties config/server1.properties```
+  * Criamos mais 3 brokers:
+    * ```cp config/server1.properties config/server2.properties```
+    * ```cp config/server1.properties config/server3.properties```
+    * ```cp config/server1.properties config/server4.properties```
+  * Para cada um desses brokers, iremos editar o arquivo e setar as configurações nos atributos:
+    * ```code config/server{numeroBroker}.properties```
+      * broker.id={numeroBroker}
+      * log.dirs=/Users/{meuUser}/Documents/Projects/Pessoal/data/kafka{numeroBroker}
+      * listeners=PLAINTEXT://:909{numeroBroker} Lembrando que nesse caso precisamos fazer isso pois estamos rodando os brokers na mesma máquina, mas em produção, os ips serão diferentes.
+    * Remover os arquivos de data, pois eles serão criados sozinhos.
+  * A ideia aqui é subir os 4 kafkas, produzir as mensagens, verificar o consumo, verificar os detalhes dos tópicos e verificar o comportamento dos líderes e réplicas.
+  * Quando derrubamos um broker, o Kafka irá rebalancear as partições, e o líder irá mudar de broker, fazendo com que não fiquemos sem o serviço. Antes do broker cair ele enviará as mensagens para outros líderes assumirem as informações do mesmo.
+  * Dessa forma, não teremos mais um ponto de falha e sim diversos pontos de falha, o que é muito melhor.
+  * Tudo é feito de forma automáticas, sem precisar de intervenção humana.
+
 
 Atalhos:
 * Iniciar o Zookeeper:
@@ -277,14 +302,26 @@ cd ../kafka_2.13-3.6.1
 bin/zookeeper-server-start.sh config/zookeeper.properties
 ```
 
-* Iniciar o Kafka:
+* Iniciar o Kafka1 :
 ``` sh Kafka
 cd ../kafka_2.13-3.6.1
-bin/kafka-server-start.sh config/server.properties
+bin/kafka-server-start.sh config/server1.properties
 ```
 
 * Iniciar o Kafka 2:
 ``` sh Kafka 2
 cd ../kafka_2.13-3.6.1
 bin/kafka-server-start.sh config/server2.properties
+```
+
+* Iniciar o Kafka 3:
+``` sh Kafka 2
+cd ../kafka_2.13-3.6.1
+bin/kafka-server-start.sh config/server3.properties
+```
+
+* Iniciar o Kafka 4:
+``` sh Kafka 2
+cd ../kafka_2.13-3.6.1
+bin/kafka-server-start.sh config/server4.properties
 ```
