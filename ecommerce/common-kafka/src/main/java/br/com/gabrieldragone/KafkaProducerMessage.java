@@ -27,6 +27,7 @@ public class KafkaProducerMessage<T> implements Closeable { // <T> Tipo genéric
         // Serializa Strings em Bytes:
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GsonSerializer.class.getName()); // Criada a serialização via Gson do tipo Genérico
+        properties.setProperty(ProducerConfig.ACKS_CONFIG, "all"); // Garante que a mensagem foi enviada para todos os brokers.
         return properties;
     }
 
@@ -39,7 +40,7 @@ public class KafkaProducerMessage<T> implements Closeable { // <T> Tipo genéric
             }
             System.out.println("Sent with success " + data.topic() + ":::partition " + data.partition() + "/ offset " + data.offset() + "/ timestamp " + data.timestamp());
         };
-        producer.send(record, callback).get(); // Fazemos o código esperar o retorno do Future.
+        producer.send(record, callback).get(); // Fazemos o código esperar o retorno do Future, após o lider informar que está ok.
     }
 
     @Override

@@ -293,6 +293,14 @@ Formação Alura: Mensageria com Apache Kafka
   * Quando derrubamos um broker, o Kafka irá rebalancear as partições, e o líder irá mudar de broker, fazendo com que não fiquemos sem o serviço. Antes do broker cair ele enviará as mensagens para outros líderes assumirem as informações do mesmo.
   * Dessa forma, não teremos mais um ponto de falha e sim diversos pontos de falha, o que é muito melhor.
   * Tudo é feito de forma automáticas, sem precisar de intervenção humana.
+* 05 - Acks e reliability:
+  * O que acontece quando uma mensagem chega no lider, mas antes de replicar para as replicas, o lider cair? Dessa forma, quando uma replica assumir o papel de liderança, a mensagem que foi enviada para o lider e não foi replicada, será perdida. O mesmo acontece quando as replicas caem.
+  * Dentro da configuração do KafkaProducer, temos a propriedade ProducerConfig.ACKS_CONFIG que define o comportamento do produtor, esse que pode ter os seguintes comportamentos:
+    * acks=0: O produtor não espera nenhuma confirmação do broker, ele apenas envia a mensagem e não espera nada. É o mais rápido, porém, é o menos seguro, pois ele não espera nenhuma confirmação
+    * acks=1: O produtor espera a confirmação do broker líder, mas não espera a confirmação das replicas.
+    * acks=all: O produtor espera a confirmação do broker líder e das replicas. Se apenas uma replica estiver up, ele irá esperar a confirmação da mesma. Agora, se tivermos alguma caida, ele irá esperar até que todas estejam up. É o mais seguro, porém, é o mais lento, pois ele espera a confirmação de todas as replicas.
+  * ISR: In Sync Replica, é o conjunto de replicas que estão sincronizadas com o líder. Se uma replica cair, ela sai do ISR, e se ela voltar, ela entra no ISR novamente.
+  * O reliability é a confiabilidade, e o acks=all é o mais confiável, porém, é o mais lento.
 
 
 Atalhos:
